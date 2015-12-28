@@ -9,9 +9,10 @@ import (
 	"net/http"
 )
 
-func run() {
-	http.HandleFunc("/", handler)
-	log.Fatal(http.ListenAndServe(config.D["portInternal"], nil))
+func Run() {
+	serverInternal := http.NewServeMux()
+	serverInternal.HandleFunc("/", handler)
+	log.Fatal(http.ListenAndServe(config.D["portInternal"], serverInternal))
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {

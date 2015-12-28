@@ -13,8 +13,8 @@ func init() {
 	D = make(map[string]string)
 }
 
-func parseArgs() error {
-	D["portExternal"] = *flag.String("portExternal", "localhost:8000", "external web port")
-	D["portInternal"] = *flag.String("portInternal", "localhost:8100", "Internal web port")
+func ParseArgs() error {
+	D["portExternal"] = *flag.String("portExternal", "localhost:7000", "external web port")
+	D["portInternal"] = *flag.String("portInternal", "localhost:7100", "Internal web port")
 	return nil
 }
