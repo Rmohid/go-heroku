@@ -3,6 +3,7 @@
 package data
 
 import (
+	"sort"
 	"sync"
 )
 
@@ -33,6 +34,12 @@ func Get(k string) string {
 	defer mu.Unlock()
 	return data[k]
 }
+func Exists(k string) bool {
+	mu.Lock()
+	defer mu.Unlock()
+	_, ok := data[k]
+	return ok
+}
 func Keys() []string {
 	mu.Lock()
 	defer mu.Unlock()
@@ -40,5 +47,6 @@ func Keys() []string {
 	for k := range data {
 		keys = append(keys, k)
 	}
+	sort.Strings(keys)
 	return keys
 }

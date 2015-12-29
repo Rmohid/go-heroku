@@ -13,6 +13,19 @@ type Option struct {
 	Name, Default, Descripton string
 }
 
+var (
+	indexed map[string]int
+	options []Option
+)
+
+func init() {
+	indexed = make(map[string]int)
+	opts := [][]string{
+		{"readableJson", "yes", "pretty print json output"},
+	}
+
+	PushArgs(opts)
+}
 func Delete(k string) {
 	data.Delete(k)
 }
@@ -22,21 +35,34 @@ func Set(k, v string) {
 func Get(k string) string {
 	return data.Get(k)
 }
+func Exists(k string) bool {
+	return data.Exists(k)
+}
 func Keys() []string {
 	return data.Keys()
 }
-
+func PushArgs(inOpts [][]string) error {
+	for i, _ := range inOpts {
+		Name, Default, Descripton := inOpts[i][0], inOpts[i][1], inOpts[i][2]
+		_, exists := indexed[Name]
+		if exists {
+			continue
+		}
+		indexed[Name] = i
+		options = append(options, Option{nil, Name, Default, Descripton})
+	}
+	return nil
+}
 func ParseArgs(inOpts [][]string) error {
 
-	var opts = []Option{}
-	for i, _ := range inOpts {
-		opts = append(opts, Option{nil, inOpts[i][0], inOpts[i][1], inOpts[i][2]})
-		var elem = &opts[i]
+	PushArgs(inOpts)
+	for i, _ := range options {
+		var elem = &options[i]
 		elem.Value = flag.String(elem.Name, elem.Default, elem.Descripton)
 	}
 	// nothing is actally done until parse is called
 	flag.Parse()
-	for _, elem := range opts {
+	for _, elem := range options {
 		data.Set(elem.Name, *elem.Value)
 	}
 

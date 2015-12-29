@@ -15,6 +15,7 @@ func Run() {
 	serverInternal := http.NewServeMux()
 	serverInternal.HandleFunc("/", handler)
 	serverInternal.HandleFunc("/json", handleJson)
+	serverInternal.HandleFunc("/JSON", handleJson)
 	log.Fatal(http.ListenAndServe(data.Get("portInternal"), serverInternal))
 }
 
@@ -35,7 +36,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleJson(w http.ResponseWriter, r *http.Request) {
-	dat, err := json.MarshalIndent(data.GetData(), "", "  ")
+	dat, err := json.Marshal(data.GetData())
+	if data.Get("readableJson") == "yes" {
+		dat, err = json.MarshalIndent(data.GetData(), "", "  ")
+	}
 	if err != nil {
 		log.Print(err)
 	}
