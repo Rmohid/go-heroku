@@ -15,6 +15,9 @@ func init() {
 	data = make(map[string]string)
 }
 
+func GetData() *map[string]string {
+	return &data
+}
 func Delete(k string) {
 	mu.Lock()
 	defer mu.Unlock()
