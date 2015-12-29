@@ -34,6 +34,7 @@ func ParseArgs(inOpts [][]string) error {
 		var elem = &opts[i]
 		elem.Value = flag.String(elem.Name, elem.Default, elem.Descripton)
 	}
+	// nothing is actally done until parse is called
 	flag.Parse()
 	for _, elem := range opts {
 		data.Set(elem.Name, *elem.Value)

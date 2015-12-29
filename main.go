@@ -22,6 +22,7 @@ func main() {
 	if err = config.ParseArgs(opts); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}
+
 	fmt.Println("listening on ports:", config.Get("portExternal"), config.Get("portInternal"))
 
 	webExternal.Run()

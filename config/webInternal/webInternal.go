@@ -24,7 +24,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 	if len(r.Form) > 0 {
 		for k, v := range r.Form {
-			fmt.Fprintf(w, "Form[%q] = %q\n", k, v)
 			data.Set(k, strings.Join(v, " "))
 		}
 	} else {
