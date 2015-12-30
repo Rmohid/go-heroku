@@ -14,6 +14,7 @@ import (
 func Run() {
 	serverInternal := http.NewServeMux()
 	serverInternal.HandleFunc("/", handler)
+	serverInternal.HandleFunc("/key/", handleGetKey)
 	serverInternal.HandleFunc("/json", handleGetJson)
 	serverInternal.HandleFunc("/JSON", handleGetJson)
 	log.Fatal(http.ListenAndServe(data.Get("portInternal"), serverInternal))
@@ -76,5 +77,11 @@ func handleDelete(w http.ResponseWriter, r *http.Request) {
 		for k, _ := range r.Form {
 			data.Delete(k)
 		}
+	}
+}
+func handleGetKey(w http.ResponseWriter, r *http.Request) {
+	var i = strings.LastIndex(r.URL.Path, "/key/") + len("/key/")
+	if i > 0 {
+		fmt.Fprintf(w, "%s\n", data.Get(r.URL.Path[i:]))
 	}
 }
