@@ -16,14 +16,13 @@ func main() {
 	// define all string based options
 	var opts = [][]string{
 		{"portExternal", "localhost:7000", "external web port"},
-		{"portInternal", "localhost:7100", "internal web port"},
 	}
 
 	if err = config.ParseArgs(opts); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}
 
-	fmt.Println("listening on ports:", config.Get("portExternal"), config.Get("portInternal"))
+	fmt.Println("listening on", config.Get("portExternal"))
 
 	webExternal.Run()
 }

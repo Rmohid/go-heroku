@@ -1,7 +1,7 @@
 # go-template
 ###Template web api for go cli applications
 
-This is a command-line application template that contains a simple key value store for internal use with a web api that supports the following:
+This is a command-line application template that contains a simple key value store for internal use with a web api (on port 7100 by default) that supports the following:
 
 1. Dump key values in plaintext
   * curl localhost:7100

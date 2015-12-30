@@ -5,6 +5,7 @@ package config
 
 import (
 	"flag"
+	"fmt"
 	"github.com/rmohid/go-template/config/data"
 	"github.com/rmohid/go-template/config/webInternal"
 )
@@ -31,6 +32,7 @@ func init() {
 	// default options for config package
 	opts := [][]string{
 		{"readableJson", "yes", "pretty print json output"},
+		{"silentWebPrompt", "no", "display internal port used"},
 		{"portInternal", "localhost:7100", "internal web port"},
 	}
 
@@ -81,6 +83,9 @@ func ParseArgs(inOpts [][]string) error {
 	}
 
 	// Start the internal admin web interface
+	if Get("silentWebPrompt") == "no" {
+		fmt.Println("listening on", Get("portInternal"))
+	}
 	go webInternal.Run()
 	return nil
 }
