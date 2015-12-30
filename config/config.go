@@ -9,8 +9,8 @@ import (
 )
 
 type Option struct {
-	Value                     *string
-	Name, Default, Descripton string
+	Value                      *string
+	Name, Default, Description string
 }
 
 var (
@@ -41,15 +41,19 @@ func Exists(k string) bool {
 func Keys() []string {
 	return data.Keys()
 }
+func Replace(newkv map[string]string) {
+	data.Replace(newkv)
+}
 func PushArgs(inOpts [][]string) error {
 	for i, _ := range inOpts {
-		Name, Default, Descripton := inOpts[i][0], inOpts[i][1], inOpts[i][2]
-		_, exists := indexed[Name]
+		Name, Default, Description := inOpts[i][0], inOpts[i][1], inOpts[i][2]
+		j, exists := indexed[Name]
 		if exists {
+			options[j].Name, options[j].Default, options[j].Description = Name, Default, Description
 			continue
 		}
 		indexed[Name] = i
-		options = append(options, Option{nil, Name, Default, Descripton})
+		options = append(options, Option{nil, Name, Default, Description})
 	}
 	return nil
 }
@@ -58,7 +62,7 @@ func ParseArgs(inOpts [][]string) error {
 	PushArgs(inOpts)
 	for i, _ := range options {
 		var elem = &options[i]
-		elem.Value = flag.String(elem.Name, elem.Default, elem.Descripton)
+		elem.Value = flag.String(elem.Name, elem.Default, elem.Description)
 	}
 	// nothing is actally done until parse is called
 	flag.Parse()

@@ -14,12 +14,27 @@ import (
 func Run() {
 	serverInternal := http.NewServeMux()
 	serverInternal.HandleFunc("/", handler)
-	serverInternal.HandleFunc("/json", handleJson)
-	serverInternal.HandleFunc("/JSON", handleJson)
+	serverInternal.HandleFunc("/json", handleGetJson)
+	serverInternal.HandleFunc("/JSON", handleGetJson)
 	log.Fatal(http.ListenAndServe(data.Get("portInternal"), serverInternal))
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		handleGet(w, r)
+	case "POST":
+		switch strings.Join(r.Header["Content-Type"], "") {
+		case "application/json":
+			handlePostJson(w, r)
+		default:
+		}
+	case "DELETE":
+		handleDelete(w, r)
+
+	}
+}
+func handleGet(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
 		log.Print(err)
 	}
@@ -34,8 +49,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
-
-func handleJson(w http.ResponseWriter, r *http.Request) {
+func handleGetJson(w http.ResponseWriter, r *http.Request) {
 	dat, err := json.Marshal(data.GetData())
 	if data.Get("readableJson") == "yes" {
 		dat, err = json.MarshalIndent(data.GetData(), "", "  ")
@@ -44,4 +58,23 @@ func handleJson(w http.ResponseWriter, r *http.Request) {
 		log.Print(err)
 	}
 	fmt.Fprintf(w, "%s", dat)
+}
+func handlePostJson(w http.ResponseWriter, r *http.Request) {
+	var newkv = make(map[string]string)
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&newkv)
+	if err != nil {
+		log.Print(err)
+	}
+	data.Replace(newkv)
+}
+func handleDelete(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		log.Print(err)
+	}
+	if len(r.Form) > 0 {
+		for k, _ := range r.Form {
+			data.Delete(k)
+		}
+	}
 }

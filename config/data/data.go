@@ -50,3 +50,9 @@ func Keys() []string {
 	sort.Strings(keys)
 	return keys
 }
+func Replace(newkv map[string]string) {
+	mu.Lock()
+	defer mu.Unlock()
+	// take old reference and garbage collect memory
+	data = newkv
+}
