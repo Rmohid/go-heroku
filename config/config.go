@@ -1,4 +1,5 @@
-// Key value store for global configuration data
+// Key value web api for configuration data
+// See github.com/rmohid/go-template for detailed description
 
 package config
 
@@ -13,6 +14,12 @@ type Option struct {
 	Name, Default, Description string
 }
 
+const (
+	NameIdx = iota
+	DefaultIdx
+	DescriptionIdx
+)
+
 var (
 	indexed map[string]int
 	options []Option
@@ -20,8 +27,11 @@ var (
 
 func init() {
 	indexed = make(map[string]int)
+
+	// default options for config package
 	opts := [][]string{
 		{"readableJson", "yes", "pretty print json output"},
+		{"portInternal", "localhost:7100", "internal web port"},
 	}
 
 	PushArgs(opts)
@@ -46,7 +56,7 @@ func Replace(newkv map[string]string) {
 }
 func PushArgs(inOpts [][]string) error {
 	for i, _ := range inOpts {
-		Name, Default, Description := inOpts[i][0], inOpts[i][1], inOpts[i][2]
+		Name, Default, Description := inOpts[i][NameIdx], inOpts[i][DefaultIdx], inOpts[i][DescriptionIdx]
 		j, exists := indexed[Name]
 		if exists {
 			options[j].Name, options[j].Default, options[j].Description = Name, Default, Description

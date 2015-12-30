@@ -1,4 +1,4 @@
-// Key value store for global configuration data
+// Key value store for global configuration data, replace with whatever backend you like
 
 package data
 
@@ -27,7 +27,9 @@ func Delete(k string) {
 func Set(k, v string) {
 	mu.Lock()
 	defer mu.Unlock()
-	data[k] = v
+	if len(k) > 0 {
+		data[k] = v
+	}
 }
 func Get(k string) string {
 	mu.Lock()

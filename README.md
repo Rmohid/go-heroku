@@ -12,7 +12,7 @@ This is a command-line application template that contains a simple key value sto
 4. Update kv store from JSON
   * curl -H "Content-Type: application/json" --data @kvdata.json http://localhost:7100
 5. Delete individual key values
-  * curl -X DELETE localhost:7100?somekey
+  * curl -X DELETE localhost:7100?someKey
 6. Dump an individual key
   * curl localhost:7100/key/someKey
 
