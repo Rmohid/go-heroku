@@ -31,9 +31,10 @@ func init() {
 
 	// default options for config package
 	opts := [][]string{
-		{"readableJson", "yes", "pretty print json output"},
-		{"silentWebPrompt", "no", "display internal port used"},
-		{"portInternal", "localhost:7100", "internal web port"},
+		{"config.readableJson", "yes", "pretty print json output"},
+		{"config.enableFlagParse", "yes", "allow config to flag.Parse()"},
+		{"config.silentWebPrompt", "no", "display internal port used"},
+		{"config.portInternal", "localhost:7100", "internal web port"},
 	}
 
 	PushArgs(opts)
@@ -66,6 +67,7 @@ func PushArgs(inOpts [][]string) error {
 		}
 		indexed[Name] = i
 		options = append(options, Option{nil, Name, Default, Description})
+		data.Set(Name, Default)
 	}
 	return nil
 }
@@ -77,7 +79,9 @@ func ParseArgs(inOpts [][]string) error {
 		elem.Value = flag.String(elem.Name, elem.Default, elem.Description)
 	}
 	// nothing is actally done until parse is called
-	flag.Parse()
+	if Get("config.enableFlagParse") == "yes" {
+		flag.Parse()
+	}
 	for _, elem := range options {
 		data.Set(elem.Name, *elem.Value)
 	}
