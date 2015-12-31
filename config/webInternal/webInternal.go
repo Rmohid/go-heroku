@@ -17,7 +17,7 @@ func Run() {
 	serverInternal.HandleFunc("/key/", handleGetKey)
 	serverInternal.HandleFunc("/json", handleGetJson)
 	serverInternal.HandleFunc("/JSON", handleGetJson)
-	log.Fatal(http.ListenAndServe(data.Get("portInternal"), serverInternal))
+	log.Fatal("webInternal.Run(): ", http.ListenAndServe(data.Get("config.portInternal"), serverInternal))
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -52,7 +52,7 @@ func handleGet(w http.ResponseWriter, r *http.Request) {
 }
 func handleGetJson(w http.ResponseWriter, r *http.Request) {
 	dat, err := json.Marshal(data.GetData())
-	if data.Get("readableJson") == "yes" {
+	if data.Get("config.readableJson") == "yes" {
 		dat, err = json.MarshalIndent(data.GetData(), "", "  ")
 	}
 	if err != nil {

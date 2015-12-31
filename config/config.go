@@ -92,7 +92,7 @@ func ParseArgs(inOpts [][]string) error {
 
 	// Start the internal admin web interface
 	if Get("config.silentWebPrompt") == "no" {
-		fmt.Println("listening on", Get("config.portInternal"))
+		fmt.Println("configuration on", Get("config.portInternal"))
 	}
 	go webInternal.Run()
 	return nil
