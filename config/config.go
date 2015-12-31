@@ -59,10 +59,14 @@ func Replace(newkv map[string]string) {
 }
 func PushArgs(inOpts [][]string) error {
 	for i, _ := range inOpts {
-		Name, Default, Description := inOpts[i][NameIdx], inOpts[i][DefaultIdx], inOpts[i][DescriptionIdx]
+		var Name, Default, Description string
+		Name, Default = inOpts[i][NameIdx], inOpts[i][DefaultIdx]
+		if len(inOpts[i]) > DescriptionIdx {
+			Description = inOpts[i][DescriptionIdx]
+		}
 		j, exists := indexed[Name]
 		if exists {
-			options[j].Name, options[j].Default, options[j].Description = Name, Default, Description
+			options[j].Name, options[j].Default = Name, Default
 			continue
 		}
 		indexed[Name] = i
@@ -87,8 +91,8 @@ func ParseArgs(inOpts [][]string) error {
 	}
 
 	// Start the internal admin web interface
-	if Get("silentWebPrompt") == "no" {
-		fmt.Println("listening on", Get("portInternal"))
+	if Get("config.silentWebPrompt") == "no" {
+		fmt.Println("listening on", Get("config.portInternal"))
 	}
 	go webInternal.Run()
 	return nil
