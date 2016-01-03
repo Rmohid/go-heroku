@@ -6,51 +6,69 @@ import (
 	"sort"
 	"sync"
 )
+type  kvData struct{
+        key,value string
+        exists bool
+}
 
 var (
 	data map[string]string
 	mu   sync.Mutex
+        get = make(chan string)
+        remove = make(chan string)
+        keys = make(chan []string)
+        set = make(chan kvData)
+        exists = make(chan kvData)
 )
 
 func init() {
 	data = make(map[string]string)
+        go broker()
 }
 
+func broker(){
+        for{
+                select{
+                case key := <-get:
+                        get <- data[key]
+                case kv := <-set:
+                        data[kv.key] = kv.value
+                case k := <-remove:
+                        delete(data, k)
+                case kv := <-exists:
+                        _,ok := data[kv.key]
+                        exists <- kvData{"","",ok}
+                case <-keys:
+                        list := make([]string, 0, len(data))
+                        for k := range data {
+                                list = append(list, k)
+                        }
+                        sort.Strings(list)
+                        keys <- list
+                }
+        }
+}
 func GetData() *map[string]string {
 	return &data
 }
 func Delete(k string) {
-	mu.Lock()
-	defer mu.Unlock()
-	delete(data, k)
+        remove <- k
 }
 func Set(k, v string) {
-	mu.Lock()
-	defer mu.Unlock()
-	if len(k) > 0 {
-		data[k] = v
-	}
+        if k == "" { return }
+        set <- kvData{k,v,true}
 }
 func Get(k string) string {
-	mu.Lock()
-	defer mu.Unlock()
-	return data[k]
+        get <- k
+	return  <- get
 }
 func Exists(k string) bool {
-	mu.Lock()
-	defer mu.Unlock()
-	_, ok := data[k]
-	return ok
+        exists <- kvData{k,"",true}
+        return  (<-exists).exists
 }
 func Keys() []string {
-	mu.Lock()
-	defer mu.Unlock()
-	keys := make([]string, 0, len(data))
-	for k := range data {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-	return keys
+        keys <- []string{}
+        return <- keys
 }
 func Replace(newkv map[string]string) {
 	mu.Lock()
