@@ -8,6 +8,7 @@ import (
 	"github.com/rmohid/go-template/dbg"
 	"github.com/rmohid/go-template/webExternal"
 	"os"
+	"time"
 )
 
 var err error
@@ -27,5 +28,14 @@ func main() {
 	dbg.Log(0, "Starting..")
 	fmt.Println("listening on", config.Get("portExternal"))
 
+	go test()
 	webExternal.Run()
+}
+
+func test() {
+	for {
+		time.Sleep(1 * time.Second)
+		dbg.Log(1, "Debug log 1")
+		dbg.Log(2, "Debug log 2")
+	}
 }
