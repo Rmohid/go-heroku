@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"github.com/rmohid/go-template/config/data"
 	"github.com/rmohid/go-template/config/webInternal"
+	"sync"
 )
 
 type Option struct {
@@ -22,6 +23,7 @@ const (
 )
 
 var (
+	mu      sync.Mutex
 	indexed map[string]int
 	options []Option
 )
@@ -34,7 +36,7 @@ func init() {
 		{"config.readableJson", "yes", "pretty print json output"},
 		{"config.enableFlagParse", "yes", "allow config to flag.Parse()"},
 		{"config.silentWebPrompt", "no", "display internal port used"},
-		{"config.portInternal", "localhost:7100", "internal web port"},
+		{"config.portInternal", "", "internal web port"},
 	}
 
 	PushArgs(opts)
@@ -91,9 +93,11 @@ func ParseArgs(inOpts [][]string) error {
 	}
 
 	// Start the internal admin web interface
-	if Get("config.silentWebPrompt") == "no" {
-		fmt.Println("configuration on", Get("config.portInternal"))
+	if Get("config.portInternal") != "" {
+		if Get("config.silentWebPrompt") == "no" {
+			fmt.Println("configuration on", Get("config.portInternal"))
+		}
+		go webInternal.Run()
 	}
-	go webInternal.Run()
 	return nil
 }
