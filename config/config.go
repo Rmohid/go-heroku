@@ -12,8 +12,8 @@ import (
 )
 
 type Option struct {
-	Value                      *string
 	Name, Default, Description string
+	Value                      *string
 }
 
 const (
@@ -24,12 +24,11 @@ const (
 
 var (
 	mu      sync.Mutex
-	indexed map[string]int
-	options []Option
+	indexed map[string]*Option
 )
 
 func init() {
-	indexed = make(map[string]int)
+	indexed = make(map[string]*Option)
 
 	// default options for config package
 	opts := [][]string{
@@ -59,36 +58,42 @@ func Keys() []string {
 func Replace(newkv map[string]string) {
 	data.Replace(newkv)
 }
+func Dump() []string {
+	var out []string
+	for _, k := range Keys() {
+		kv := fmt.Sprintf("%s=%s,", k, Get(k))
+		out = append(out, kv)
+	}
+	return out
+}
 func PushArgs(inOpts [][]string) error {
+	mu.Lock()
+	defer mu.Unlock()
 	for i, _ := range inOpts {
-		var Name, Default, Description string
-		Name, Default = inOpts[i][NameIdx], inOpts[i][DefaultIdx]
-		if len(inOpts[i]) > DescriptionIdx {
-			Description = inOpts[i][DescriptionIdx]
+		var o Option
+		o.Name, o.Default = inOpts[i][NameIdx], inOpts[i][DefaultIdx]
+		if len(inOpts[i]) > 2 {
+			o.Description = inOpts[i][DescriptionIdx]
 		}
-		j, exists := indexed[Name]
-		if exists {
-			options[j].Name, options[j].Default = Name, Default
-			continue
-		}
-		indexed[Name] = i
-		options = append(options, Option{nil, Name, Default, Description})
-		data.Set(Name, Default)
+		data.Set(o.Name, o.Default)
+		indexed[o.Name] = &o
 	}
 	return nil
 }
 func ParseArgs(inOpts [][]string) error {
 
 	PushArgs(inOpts)
-	for i, _ := range options {
-		var elem = &options[i]
+	mu.Lock()
+	defer mu.Unlock()
+	for _, v := range indexed {
+		elem := v
 		elem.Value = flag.String(elem.Name, elem.Default, elem.Description)
 	}
 	// nothing is actally done until parse is called
 	if Get("config.enableFlagParse") == "yes" {
 		flag.Parse()
 	}
-	for _, elem := range options {
+	for _, elem := range indexed {
 		data.Set(elem.Name, *elem.Value)
 	}
 

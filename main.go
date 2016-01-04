@@ -17,14 +17,17 @@ func main() {
 
 	// define all string based options
 	var opts = [][]string{
-		{"config.portInternal", "localhost:7100", "external web port"},
 		{"portExternal", "localhost:7000", "external web port"},
+		{"config.portInternal", "localhost:7100"},
+		{"dbg.httpUrl", "localhost:7000"},
+		{"dbg.verbosity", "1"},
 	}
 
 	if err = config.ParseArgs(opts); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}
 
+	dbg.Log(2, config.Dump())
 	dbg.Log(0, "Starting..")
 	fmt.Println("listening on", config.Get("portExternal"))
 
