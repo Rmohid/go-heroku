@@ -24,11 +24,13 @@ func init() {
 	writers["stdout"] = os.Stdout
 	writers["stderr"] = os.Stderr
 	writers["http"] = httpwriter()
+	writers["file"] = filewriter()
 
 	// define all default options
 	var opts = [][]string{
 		{"dbg.debugWriter", "stderr", "debug log output sink"},
 		{"dbg.verbosity", "0", "verbosity level for debug output"},
+		{"dbg.logfile", "config.log", "filename for log collection"},
 		{"dbg.httpUrl", "", "http server for log delivery"},
 	}
 
@@ -82,4 +84,25 @@ func (h httpWriter) Write(p []byte) (n int, err error) {
 	}
 	defer resp.Body.Close()
 	return 0, nil
+}
+
+func filewriter() io.Writer {
+	var h fileWriter
+	return h
+}
+
+type fileWriter struct {
+}
+
+func (h fileWriter) Write(p []byte) (n int, err error) {
+	str := config.Get("dbg.logfile")
+	if str == "" {
+		return 0, nil
+	}
+	f, err := os.OpenFile(str, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0666)
+	if err != nil {
+		log.Fatal("dbg.filewriter:", err)
+	}
+	defer f.Close()
+	return f.Write(p)
 }
