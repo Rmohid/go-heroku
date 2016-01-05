@@ -38,7 +38,7 @@ func main() {
 func test() {
 	for {
 		time.Sleep(1 * time.Second)
-		dbg.Log(1, "Debug log 1")
-		dbg.Log(2, "Debug log 2")
+		dbg.Log(1, "Debug log 1 ", time.Now().Format(time.StampMilli))
+		dbg.Log(2, "Debug log 2 ", time.Now().Format(time.Kitchen))
 	}
 }

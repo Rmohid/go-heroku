@@ -34,6 +34,15 @@ func init() {
 
 	config.PushArgs(opts)
 }
+func ErrLog(verbosity int, format string, a ...interface{}) {
+	val, err := strconv.Atoi(config.Get("dbg.verbosity"))
+	if err != nil {
+		log.Fatal("dbg.ErrLog:", err)
+	}
+	if val >= verbosity {
+		fmt.Fprintf(os.Stderr, format, a...)
+	}
+}
 func Log(verbosity int, a ...interface{}) {
 	val, err := strconv.Atoi(config.Get("dbg.verbosity"))
 	if err != nil {
@@ -66,7 +75,8 @@ func (h httpWriter) Write(p []byte) (n int, err error) {
 		return 0, nil
 	}
 	payload := fmt.Sprintf(string(p[:]))
-	resp, err := http.PostForm(str, url.Values{time.Now().Format("15:04:05 "): {payload}})
+	str = fmt.Sprintf("http://%s?%s=%s", str, time.Now().Format("2006-01-02T15:04:05.999Z07:00"), url.QueryEscape(payload))
+	resp, err := http.Get(str)
 	if err != nil {
 		return 0, fmt.Errorf("dbg.httpWriter:", err)
 	}
