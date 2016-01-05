@@ -17,3 +17,21 @@ This is a command-line application template that contains a simple key value sto
   * curl localhost:7100/key/someKey
 
 This functionality can be added to a existing go application by including `github.com/rmohid/go-template/config` as a standalone package. Main and webExternal are not needed.
+
+It also includes a debug logger `dbg.Log()` that supports the following:
+
+1. Runtime changes to log verbosity, higher values for more detailed output
+  * `dbg.Log(2,"Will only show for verbosity 2 or above")`
+  * curl localhost:7100?dbg.verbosity=2
+2. Log output to sdout/sderr or /dev/null
+  * curl localhost:7100?dbg.debugWriter=sdtout
+  * curl localhost:7100?dbg.debugWriter=sdterr
+  * curl localhost:7100?dbg.debugWriter=devnull
+3. Log output as form data to a web server
+  * curl localhost:7100?dbg.httpUrl=localhost:7000
+  * curl localhost:7100?dbg.debugWriter=http
+4. Log output to a file
+  * curl localhost:7100?dbg.logfile=./somefile.log
+  * curl localhost:7100?dbg.debugWriter=file
+
+This functionality can be added by including `github.com/rmohid/go-template/dbg`
