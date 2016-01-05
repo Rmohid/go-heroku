@@ -32,10 +32,10 @@ func init() {
 
 	// default options for config package
 	opts := [][]string{
-		{"config.readableJson", "yes", "pretty print json output"},
-		{"config.enableFlagParse", "yes", "allow config to flag.Parse()"},
+		{"config.portInternal", "localhost:7100", "internal api web port"},
 		{"config.silentWebPrompt", "no", "display internal port used"},
-		{"config.portInternal", "", "internal web port"},
+		{"config.readableJson", "yes", "pretty print api json output"},
+		{"config.enableFlagParse", "yes", "allow config to flag.Parse()"},
 	}
 
 	PushArgs(opts)
@@ -71,6 +71,9 @@ func PushArgs(inOpts [][]string) error {
 	defer mu.Unlock()
 	for i, _ := range inOpts {
 		var o Option
+		if v, ok := indexed[inOpts[i][NameIdx]]; ok == true {
+			o = *v
+		}
 		o.Name, o.Default = inOpts[i][NameIdx], inOpts[i][DefaultIdx]
 		if len(inOpts[i]) > 2 {
 			o.Description = inOpts[i][DescriptionIdx]
