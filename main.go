@@ -4,9 +4,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/rmohid/go-heroku/Godeps/_workspace/src/github.com/rmohid/go-heroku/config"
-	"github.com/rmohid/go-heroku/Godeps/_workspace/src/github.com/rmohid/go-heroku/dbg"
-	"github.com/rmohid/go-heroku/Godeps/_workspace/src/github.com/rmohid/go-heroku/webExternal"
+	"github.com/rmohid/go-heroku/config"
+	"github.com/rmohid/go-heroku/dbg"
+	"github.com/rmohid/go-heroku/webExternal"
 	"os"
 	"time"
 )

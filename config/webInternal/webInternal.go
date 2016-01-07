@@ -5,7 +5,7 @@ package webInternal
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/rmohid/go-heroku/Godeps/_workspace/src/github.com/rmohid/go-heroku/config/data"
+	"github.com/rmohid/go-heroku/config/data"
 	"log"
 	"net/http"
 	"strings"

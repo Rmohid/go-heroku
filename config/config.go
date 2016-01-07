@@ -6,8 +6,8 @@ package config
 import (
 	"flag"
 	"fmt"
-	"github.com/rmohid/go-heroku/Godeps/_workspace/src/github.com/rmohid/go-heroku/config/data"
-	"github.com/rmohid/go-heroku/Godeps/_workspace/src/github.com/rmohid/go-heroku/config/webInternal"
+	"github.com/rmohid/go-heroku/config/data"
+	"github.com/rmohid/go-heroku/config/webInternal"
 	"sync"
 )
 

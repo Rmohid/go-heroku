@@ -4,7 +4,7 @@ package dbg
 
 import (
 	"fmt"
-	"github.com/rmohid/go-heroku/Godeps/_workspace/src/github.com/rmohid/go-heroku/config"
+	"github.com/rmohid/go-heroku/config"
 	"io"
 	"log"
 	"net/http"
