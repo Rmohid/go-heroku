@@ -1,13 +1,13 @@
 // Key value web api for configuration data
-// See github.com/rmohid/go-template for detailed description
+// See github.com/rmohid/go-heroku for detailed description
 
 package config
 
 import (
 	"flag"
 	"fmt"
-	"github.com/rmohid/go-template/config/data"
-	"github.com/rmohid/go-template/config/webInternal"
+	"github.com/rmohid/go-heroku/Godeps/_workspace/src/github.com/rmohid/go-heroku/config/data"
+	"github.com/rmohid/go-heroku/Godeps/_workspace/src/github.com/rmohid/go-heroku/config/webInternal"
 	"sync"
 )
 

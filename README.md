@@ -16,7 +16,7 @@ This is a command-line application template that contains a simple key value sto
 6. Dump an individual key
   * curl localhost:7100/key/someKey
 
-This functionality can be added to a existing go application by including `github.com/rmohid/go-template/config` as a standalone package. Main and webExternal are not needed.
+This functionality can be added to a existing go application by including `github.com/rmohid/go-heroku/config` as a standalone package. Main and webExternal are not needed.
 
 It also includes a debug logger `dbg.Log()` that supports the following:
 
@@ -34,4 +34,4 @@ It also includes a debug logger `dbg.Log()` that supports the following:
   * curl localhost:7100?dbg.logfile=./somefile.log
   * curl localhost:7100?dbg.debugWriter=file
 
-This functionality can be added by including `github.com/rmohid/go-template/dbg`
+This functionality can be added by including `github.com/rmohid/go-heroku/dbg`
